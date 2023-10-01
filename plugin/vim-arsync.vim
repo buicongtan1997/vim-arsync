@@ -80,16 +80,17 @@ function! ARsync(direction)
                 let sshpass_passwd = l:conf_dict['remote_passwd']
             endif
         endif
+        let l:id_rsa = ''
         if has_key(l:conf_dict, 'remote_id_rsa')
-            let l:user_passwd = '-i ' . l:conf_dict['remote_id_rsa']
+            let l:id_rsa = ' -i ' . l:conf_dict['remote_id_rsa']
         endif
         if l:conf_dict['remote_or_local'] == 'remote'
             if a:direction == 'down'
-                let l:cmd = [ 'rsync', l:conf_dict['remote_options'], 'ssh -p '.l:conf_dict['remote_port'], l:user_passwd . l:conf_dict['remote_host'] . ':' . l:conf_dict['remote_path'] . '/', l:conf_dict['local_path'] . '/']
+                let l:cmd = [ 'rsync', l:conf_dict['remote_options'], 'ssh -p '.l:conf_dict['remote_port'].l:id_rsa, l:user_passwd . l:conf_dict['remote_host'] . ':' . l:conf_dict['remote_path'] . '/', l:conf_dict['local_path'] . '/']
             elseif  a:direction == 'up'
-                let l:cmd = [ 'rsync', l:conf_dict['remote_options'], 'ssh -p '.l:conf_dict['remote_port'], l:conf_dict['local_path'] . '/', l:user_passwd . l:conf_dict['remote_host'] . ':' . l:conf_dict['remote_path'] . '/']
+                let l:cmd = [ 'rsync', l:conf_dict['remote_options'], 'ssh -p '.l:conf_dict['remote_port'].l:id_rsa, l:conf_dict['local_path'] . '/', l:user_passwd . l:conf_dict['remote_host'] . ':' . l:conf_dict['remote_path'] . '/']
             else " updelete
-                let l:cmd = [ 'rsync', l:conf_dict['remote_options'], 'ssh -p '.l:conf_dict['remote_port'], l:conf_dict['local_path'] . '/', l:user_passwd . l:conf_dict['remote_host'] . ':' . l:conf_dict['remote_path'] . '/', '--delete']
+                let l:cmd = [ 'rsync', l:conf_dict['remote_options'], 'ssh -p '.l:conf_dict['remote_port'].l:id_rsa, l:conf_dict['local_path'] . '/', l:user_passwd . l:conf_dict['remote_host'] . ':' . l:conf_dict['remote_path'] . '/', '--delete']
             endif
         elseif l:conf_dict['remote_or_local'] == 'local'
             if a:direction == 'down'
